@@ -7378,7 +7378,7 @@ const ia = Pe(oh, [
             async fetchTrendData() {
                 this.loading = !0, this.error = null;
                 try {
-                    const e = await fetch("https://raw.githubusercontent.com/ajgpw/youtubedata/refs/heads/main/trend-base64.json", {
+                    const e = await fetch("https://cdn.jsdelivr.net/gh/nobody81754/yt@main/trend-base64.json", {
                         redirect: "follow"
                     });
                     if (!e.ok) throw new Error("データ取得失敗");
