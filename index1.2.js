@@ -6015,12 +6015,18 @@ async function pd(e, t) {
     try {
         const o = `https://www.google.com/complete/search?client=youtube&hl=ja&ds=yt&q=${encodeURIComponent(e)}`,
             n = await fetch(o, {
-                signal: t
+                signal: t,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0'  // Add user agent
+                }
             });
         if (!n.ok) throw new Error("Network error");
-        return await n.json() || []
+        const response = await n.json();
+        console.log("Google response:", response);  // Debug this
+        return response || []
     } catch (o) {
-        return o.name !== "AbortError" && console.error("fetchSearchSuggestions error", o), []
+        console.error("fetchSearchSuggestions error", o);  // Better error logging
+        return []
     }
 }
 
