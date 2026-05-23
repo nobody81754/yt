@@ -6012,21 +6012,48 @@ function hd(e, t = "image/jpeg") {
 }
 async function pd(e, t) {
     if (!e) return [];
+
     try {
-        const o = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(e)}`,
-            n = await fetch(o, {
-                signal: t,
-                headers: {
-                    'User-Agent': 'Mozilla/5.0'  // Add user agent
-                }
-            });
-        if (!n.ok) throw new Error("Network error");
-        const response = await n.json();
-        console.log("Google response:", response);  // Debug this
-        return response || []
+        return await new Promise((resolve) => {
+            const cbName = "yt_suggest_" + Date.now();
+
+            window[cbName] = function (data) {
+                console.log("Google response:", data);
+
+                // Google format: [query, [suggestions]]
+                const suggestions = data?.[1] || [];
+
+                resolve(suggestions);
+
+                // cleanup
+                delete window[cbName];
+                script.remove();
+            };
+
+            const script = document.createElement("script");
+
+            const o =
+                "https://suggestqueries.google.com/complete/search" +
+                "?client=youtube" +
+                "&ds=yt" +
+                "&q=" +
+                encodeURIComponent(e) +
+                "&callback=" +
+                cbName;
+
+            script.src = o;
+
+            script.onerror = () => {
+                console.error("JSONP load error");
+                delete window[cbName];
+                resolve([]);
+            };
+
+            document.body.appendChild(script);
+        });
     } catch (o) {
-        console.error("fetchSearchSuggestions error", o);  // Better error logging
-        return []
+        console.error("fetchSearchSuggestions error", o);
+        return [];
     }
 }
 
