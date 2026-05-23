@@ -6013,7 +6013,7 @@ function hd(e, t = "image/jpeg") {
 async function pd(e, t) {
     if (!e) return [];
     try {
-        const o = `https://www.google.com/complete/search?client=youtube&hl=ja&ds=yt&q=${encodeURIComponent(e)}`,
+        const o = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(e)}`,
             n = await fetch(o, {
                 signal: t,
                 headers: {
